@@ -14,6 +14,7 @@ The folder [`GATE10`](./GATE10) contains a Google Colab / Jupyter workflow for *
 This material is shared as part of the dissemination activities of the **PERSPECT** project and is intended to support transparent and reproducible research in advanced SPECT simulation and reconstruction.
 
 
-# This work is supported by the **Cyprus Research and Innovation Foundation** through the project **“Personalized SPECT” (PERSPECT)**  
+# Funding
+This work is supported by the **Cyprus Research and Innovation Foundation** through the project **“Personalized SPECT” (PERSPECT)**  
 (**Project No. EXCELLENCE/0524/0410**).  
 The PERSPECT project is implemented within the framework of the **Cohesion Policy Programme “THALIA 2021–2027”** and is **co-funded by the European Union**.
