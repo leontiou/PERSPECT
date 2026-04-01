@@ -2,7 +2,7 @@
 The PERSPECT project improves SPECT imaging by using personalized Monte Carlo-based system matrices and advanced GPU-accelerated reconstruction methods to enhance detection of small lesions and brain diseases, leading to better diagnosis, treatment, and patient outcomes.
 
 
-## GATE10 notebook workflow for SPECT projection-matrix generation
+# GATE10 notebook workflow for SPECT projection-matrix generation
 
 The folder [`GATE10`](./GATE10) contains a Google Colab / Jupyter workflow for **projection matrix generation for SPECT using GATE 10**. It includes:
 
