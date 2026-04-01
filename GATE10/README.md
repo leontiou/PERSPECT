@@ -110,4 +110,4 @@ Associate Professor
 Department of Mechanical Engineering  
 Frederick University, Cyprus  
 
-**Email:** [your email here]
+**Email:** t.leontiou@frederick.ac.cy
