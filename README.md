@@ -17,9 +17,9 @@ Subfolders GATE10/Jaszczak3D and GATE10/SheppLogan3D
 - Two additional examples using voxelized 3D software phantoms
 
 
-## PERSPECT Database
+## PERSPECT Database for GATE v9.0
 
-A public database of 2D analytic phantoms, sinograms, and GATE macro files is available here:
+A public database of 2D analytic phantoms, sinograms, and GATE v9.0 macro files is available here:
 
 **[Open the database webpage](https://leontiou.github.io/PERSPECT/)**
 
