@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PERSPECT Database</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>PERSPECT Database</h1>
+  <p>Examples of 2D phantoms, sinograms, and GATE-simulated projection matrices.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Num</th>
+        <th>Phantom Description</th>
+        <th>Phantom 2D-Matrix</th>
+        <th>Phantom Sinogramme</th>
+        <th>GATE Projection Matrix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>01</td>
+        <td>
+          <strong>Jaszczak Phantom (JS)</strong><br><br>
+          <img src="entries/01_jaszczak/phantom.png" alt="Jaszczak phantom" width="220"><br><br>
+        </td>
+        <td>
+          <a href="entries/01_jaszczak/phantom.txt" download>Download 2D Matrix</a>
+        </td>
+        <td>
+          <img src="entries/01_jaszczak/sinogram.png" alt="Jaszczak sinogram" width="220"><br><br>
+          <a href="entries/01_jaszczak/sinogram.txt" download>Download Sinogramme</a>
+        </td>
+        <td>
+          <a href="entries/01_jaszczak/pmatrix.txt.gz" download>Projection Matrix</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>
