@@ -150,12 +150,36 @@
           </td>
 
           <td class="download-block">
+
+            <div class="small">
+              The full projection matrix is not distributed directly because of its size.
+              Instead, the corresponding <strong>GATE macro file</strong> is provided, allowing the simulation to be reproduced
+              and the matrix to be generated locally.
+              <br><br>
+            
+              <strong>Associated setup:</strong><br>
+              Matrix size: Rows 128×182, Cols 128×128<br>
+              Angle step: 2.8125&deg;<br>
+              Total projections: 128<br>
+              Radioactive sources: Total 8 sources, <sup>123</sup>I (159 keV), Background SRC = 0, Ratio 1:8<br>
+              Simulation time: 500 s<br>
+              Phantom activity: 3,790,000 Bq<br>
+              Total photons emitted: 1,895,000,000<br>
+              Total photons detected: 5,558,242<br>
+              Physical dimensions: Cylinder, R = 100 mm, h = 10 mm<br>
+              Absorptive material: Water (R = 100 mm)<br>
+              Remarks: 1 cold spot (Cyl:5)
+            </div>
+            <br>
+            <a href="entries/01_jaszczak/JSg.mac" download>GATE Macro File</a>            
+<!--            
             <div class="small">
               The full projection matrix is not distributed directly because of its size.
               The GATE macro file below can be used to reproduce the simulation and generate the matrix locally.
             </div>
             <br>
             <a href="entries/01_jaszczak/JSg.mac" download>GATE Macro File</a>
+-->
           </td>
         </tr>
       </tbody>
