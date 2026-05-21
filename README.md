@@ -12,9 +12,8 @@ Folder GATE10:
 - a complete demonstration notebook,
 - the `GATE10.py` simulation script,
 - examples of hardware phantom DICOM inputs,
-- a workflow for generating GATE-compatible attenuation/source maps, running dual-head SPECT simulations, and assembling a GATE-based projection matrix.
-Subfolders GATE10/Jaszczak3D and GATE10/SheppLogan3D 
-- Two additional examples using voxelized 3D software phantoms
+- a workflow for generating GATE-compatible attenuation/source maps, running dual-head SPECT simulations, and assembling a GATE-based projection matrix,
+- Subfolders GATE10/Jaszczak3D and GATE10/SheppLogan3D contain two additional examples using voxelized 3D software phantoms.
 
 
 ## PERSPECT Database for GATE v9.0
