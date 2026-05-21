@@ -4,43 +4,156 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PERSPECT Database</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: "Times New Roman", serif;
+      background: #f4efef;
+      margin: 20px;
+      color: #111;
+    }
+
+    h1, h2, p {
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    p.note {
+      max-width: 1100px;
+      margin: 0 auto 20px auto;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #dcdceb;
+    }
+
+    th, td {
+      border: 2px solid #666;
+      padding: 10px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 18px;
+    }
+
+    th {
+      background: #f2a3a3;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    td img {
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 4px;
+      max-width: 220px;
+      height: auto;
+    }
+
+    a {
+      color: #2a2aa5;
+      text-decoration: underline;
+      font-size: 18px;
+    }
+
+    .small {
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .entry-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .preview-links {
+      margin-top: 8px;
+    }
+
+    .preview-links a {
+      margin: 0 8px;
+    }
+
+    .download-block {
+      line-height: 1.5;
+    }
+
+    .container {
+      overflow-x: auto;
+    }
+  </style>
 </head>
 <body>
 
   <h1>PERSPECT Database</h1>
-  <p>Examples of 2D phantoms, sinograms, and GATE-simulated projection matrices.</p>
+  <p class="note">
+    This database contains examples of 2D phantoms and GATE-simulated projection data, together with
+    the corresponding GATE macro files and simulation details used with <strong>GATE v9.0</strong>.
+    For some entries, the full projection matrix is not distributed because of its large size.
+    In these cases, the corresponding <strong>GATE macro file</strong> is provided instead, allowing the user
+    to reproduce the simulation and generate the matrix locally.
+  </p>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Num</th>
-        <th>Phantom Description</th>
-        <th>Phantom 2D-Matrix</th>
-        <th>Phantom Sinogramme</th>
-        <th>GATE Projection Matrix</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>01</td>
-        <td>
-          <strong>Jaszczak Phantom (JS)</strong><br><br>
-          <img src="entries/01_jaszczak/phantom.png" alt="Jaszczak phantom" width="220"><br><br>
-        </td>
-        <td>
-          <a href="entries/01_jaszczak/phantom.txt" download>Download 2D Matrix</a>
-        </td>
-        <td>
-          <img src="entries/01_jaszczak/sinogram.png" alt="Jaszczak sinogram" width="220"><br><br>
-          <a href="entries/01_jaszczak/sinogram.txt" download>Download Sinogramme</a>
-        </td>
-        <td>
-          <a href="entries/01_jaszczak/pmatrix.txt.gz" download>Projection Matrix</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>Num</th>
+          <th>Phantom Description</th>
+          <th>Phantom 2D-Matrix</th>
+          <th>Phantom Sinogramme</th>
+          <th>GATE Macro File</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>01</strong></td>
+
+          <td>
+            <div class="entry-title">Jaszczak Phantom (JS)</div>
+            <img src="entries/01_jaszczak/phantom.png" alt="Jaszczak phantom preview">
+            <div class="preview-links">
+              <a href="entries/01_jaszczak/phantom.png" target="_blank">Preview</a>
+            </div>
+          </td>
+
+          <td class="download-block">
+            <div class="small">
+              ASCII text file containing the phantom matrix.
+            </div>
+            <br>
+            <a href="entries/01_jaszczak/phantom.txt" download>Download 2D Matrix</a>
+          </td>
+
+          <td>
+            <img src="entries/01_jaszczak/sinogram.png" alt="Jaszczak sinogram preview">
+            <div class="small" style="margin-top: 8px;">
+              ASCII text file containing the corresponding sinogram.
+            </div>
+            <div class="preview-links">
+              <a href="entries/01_jaszczak/sinogram.png" target="_blank">Preview</a>
+              <a href="entries/01_jaszczak/sinogram.txt" download>Download Sinogramme</a>
+            </div>
+          </td>
+
+          <td class="download-block">
+            <div class="small">
+              The full projection matrix is not distributed directly because of its size.
+              The GATE macro file below can be used to reproduce the simulation and generate the matrix locally.
+            </div>
+            <br>
+            <a href="entries/01_jaszczak/JSg.mac" download>GATE Macro File</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
 </body>
 </html>
