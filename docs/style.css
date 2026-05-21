@@ -1,0 +1,38 @@
+body {
+  font-family: "Times New Roman", serif;
+  background: #f6f2f2;
+  margin: 20px;
+}
+
+h1, p {
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #dcdceb;
+}
+
+th, td {
+  border: 2px solid #666;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+th {
+  background: #f3a4a4;
+  font-size: 1.1em;
+}
+
+td img {
+  border: 1px solid #ccc;
+  background: white;
+  padding: 4px;
+}
+
+a {
+  color: #2a2aa5;
+  font-size: 1.1em;
+}
