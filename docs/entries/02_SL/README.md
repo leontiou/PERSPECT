@@ -1,0 +1,1 @@
+The **Shepp–Logan phantom (SL)** corresponds to a configuration **without background activity** and is provided here together with the associated sinogram and the GATE macro file required to reproduce the simulation and generate the corresponding projection matrix locally.
