@@ -100,13 +100,12 @@
     to reproduce the simulation and generate the matrix locally.
     <br><br>
 
-  The simulations were performed at the HPC Facility of <strong>The Cyprus Institute</strong> and were organized by
-  <a href="https://www.cyi.ac.cy/index.php/eewrc/about-the-center/eewrc-our-people/author/197-efstathios-g-stiliaris.html" target="_blank">
-    <strong>Prof. E. Stiliaris</strong>
-  </a>.
-
-    
+    The simulations were performed at the HPC Facility of <strong>The Cyprus Institute</strong> and were organized by
+    <a href="https://www.cyi.ac.cy/index.php/eewrc/about-the-center/eewrc-our-people/author/197-efstathios-g-stiliaris.html" target="_blank">
+      <strong>Prof. E. Stiliaris</strong>
+    </a>.
   </p>
+
   <div class="container">
     <table>
       <thead>
@@ -115,6 +114,7 @@
           <th>Phantom Description</th>
           <th>Phantom 2D-Matrix</th>
           <th>Phantom Sinogramme</th>
+          <th>Projection Matrix</th>
           <th>GATE Macro File</th>
         </tr>
       </thead>
@@ -153,15 +153,21 @@
           </td>
 
           <td class="download-block">
-
             <div class="small">
-              The full projection matrix is not distributed directly because of its size.
-              Instead, the corresponding <strong>GATE macro file</strong> is provided, allowing the simulation to be reproduced
-              and the matrix to be generated locally.
+              <strong>Rows:</strong> 128×182<br>
+              <strong>Cols:</strong> 128×128
+            </div>
+            <br>
+            <a href="entries/01_JS/PMJS_128.mtx.xz" download>Projection Matrix</a>
+          </td>
+
+          <td class="download-block">
+            <div class="small">
+<!--              The full projection matrix is large, and the corresponding <strong>GATE macro file</strong>
+              is also provided, allowing the simulation to be reproduced and the matrix to be generated locally.
               <br><br>
-            
+-->
               <strong>Associated setup:</strong><br>
-              Matrix size: Rows 128×182, Cols 128×128<br>
               Angle step: 2.8125&deg;<br>
               Total projections: 128<br>
               Radioactive sources: Total 8 sources, <sup>123</sup>I (159 keV), Background SRC = 0, Ratio 1:8<br>
@@ -174,16 +180,15 @@
               Remarks: 1 cold spot (Cyl:5)
             </div>
             <br>
-            <a href="entries/01_jaszczak/JSg.mac" download>GATE Macro File</a>            
+            <a href="entries/01_JS/JSg.mac" download>GATE Macro File</a>
           </td>
         </tr>
 
-        <!--  =========================   01_SL   ======================== -->
+        <!--  =========================   02_SL   ======================== -->
         <!--  ============================================================ -->
-
         <tr>
           <td><strong>02</strong></td>
-        
+
           <td>
             <div class="entry-title">Shepp-Logan Phantom (SL)</div>
             <img src="entries/02_SL/phantom.jpg" alt="Shepp-Logan phantom preview">
@@ -191,7 +196,7 @@
               <a href="entries/02_SL/phantom.jpg" target="_blank">Preview</a>
             </div>
           </td>
-        
+
           <td class="download-block">
             <div class="small">
               ASCII text file containing the phantom matrix.
@@ -204,7 +209,7 @@
             <br>
             <a href="entries/02_SL/phantom.txt" download>Download 2D Matrix</a>
           </td>
-        
+
           <td>
             <img src="entries/02_SL/sinogram.jpg" alt="Shepp-Logan sinogram preview">
             <div class="small" style="margin-top: 8px;">
@@ -220,16 +225,23 @@
               <a href="entries/02_SL/sinogram.txt" download>Download Sinogramme</a>
             </div>
           </td>
-        
+
           <td class="download-block">
             <div class="small">
-              The full projection matrix is not distributed directly because of its size.
-              Instead, the corresponding <strong>GATE macro file</strong> is provided, allowing the simulation to be reproduced
-              and the matrix to be generated locally.
+              <strong>Rows:</strong> 128×182<br>
+              <strong>Cols:</strong> 128×128
+            </div>
+            <br>
+            <a href="entries/02_SL/PMSL_128.mtx.xz" download>Projection Matrix</a>
+          </td>
+
+          <td class="download-block">
+            <div class="small">
+<!--              The full projection matrix is large, and the corresponding <strong>GATE macro file</strong>
+              is also provided, allowing the simulation to be reproduced and the matrix to be generated locally.
               <br><br>
-        
+-->
               <strong>Associated setup:</strong><br>
-              Matrix size: Rows 128×182, Cols 128×128<br>
               Radioactive sources: Total 9 sources, <sup>123</sup>I (159 keV), Background SRC = 0, Ratio 1:3.5:7<br>
               Simulation time: 150 s<br>
               Phantom activity: 3,565,000 Bq<br>
@@ -244,9 +256,6 @@
           </td>
         </tr>
 
-
-
-        
       </tbody>
     </table>
   </div>
