@@ -1,0 +1,729 @@
+############################################
+#    Simple Commercial Gamma Camera Head   #
+#    Collimator with Hexagonal Holes       #
+#    Gate V9.0                             #
+#    Stathis STILIARIS, Dec-2023           #
+############################################
+#    Shepp-Logan Phantom with Phi~0 deg    #
+#    Ideal Collimator                      #
+############################################
+#    SLICB2 2x High Background             #
+#            8 : 3.5 : 7                   #
+############################################
+
+#
+# V I S U A L I S A T I O N
+#
+#/vis/open OGLI 800x800+000+000
+/vis/viewer/set/viewpointThetaPhi +0 +0
+/vis/viewer/zoom  1.2
+/vis/drawVolume
+/vis/enable
+/vis/viewer/set/style surface
+/vis/viewer/flush
+#
+/tracking/verbose         0
+/tracking/storeTrajectory 1
+#
+/vis/scene/endOfEventAction accumulate 50
+#/vis/scene/endOfRunAction refresh
+/vis/scene/add/trajectories
+#/vis/scene/add/hits
+/vis/modeling/trajectories/create/drawByCharge
+#/vis/viewer/update
+#/vis/reviewKeptEvents
+#/vis/viewer/set/autoRefresh true
+#/vis/viewer/flush
+
+
+#
+# Material Database
+#
+/gate/geometry/setMaterialDatabase GateMaterials.db
+
+#
+# W O R L D
+#
+/gate/world/geometry/setXLength  1000 mm
+/gate/world/geometry/setYLength  1000 mm
+/gate/world/geometry/setZLength   700 mm
+
+#
+# A X E S
+#
+# /vis/scene/add/axes
+
+#
+# Detector Volumes
+#
+/gate/world/daughters/name SPECThead
+/gate/world/daughters/insert cylinder
+/gate/SPECThead/geometry/setRmin       0 mm
+/gate/SPECThead/geometry/setRmax     500 mm
+/gate/SPECThead/geometry/setHeight   700 mm
+/gate/SPECThead/placement/setTranslation  0  0  0 mm
+/gate/SPECThead/setMaterial Air
+/gate/SPECThead/vis/setColor white
+/gate/SPECThead/vis/forceWireframe
+
+#
+# DETECTOR Space (ATTENTION: Max absolute Y-Translation is 400 mm) 
+#
+/gate/SPECThead/daughters/name Det
+/gate/SPECThead/daughters/insert box
+/gate/Det/geometry/setXLength        420.0 mm
+/gate/Det/geometry/setYLength         50.0 mm
+/gate/Det/geometry/setZLength        600.0 mm
+/gate/Det/placement/setTranslation     0.0  -200.0   0.0 mm
+/gate/Det/setMaterial  Air
+/gate/Det/vis/setColor magenta
+/gate/Det/vis/forceWireframe
+
+#
+# Absorber: NaI DETECTOR
+#
+/gate/Det/daughters/name Abs
+/gate/Det/daughters/insert box
+/gate/Abs/geometry/setXLength         400.0 mm
+/gate/Abs/geometry/setYLength          10.0 mm
+/gate/Abs/geometry/setZLength          50.0 mm
+#/gate/Abs/geometry/setZLength         540.0 mm
+/gate/Abs/placement/setTranslation      0.0   -18.0   0.0 mm
+/gate/Abs/setMaterial  NaI
+/gate/Abs/vis/setColor blue
+#/gate/Abs/vis/forceSolid
+/gate/Abs/vis/forceWireframe
+
+#
+# Collimator
+#
+# /gate/Det/daughters/name Coll
+# /gate/Det/daughters/insert box
+# /gate/Coll/geometry/setXLength        410.0 mm
+# /gate/Coll/geometry/setYLength         36.0 mm
+# /gate/Coll/geometry/setZLength        100.0 mm
+#/gate/Coll/geometry/setZLength        550.0 mm
+# /gate/Coll/placement/setTranslation     0.0    +6.0   0.0 mm
+# /gate/Coll/setMaterial Lead
+# /gate/Coll/vis/setColor red
+#/gate/Coll/vis/forceSolid
+# /gate/Coll/vis/forceWireframe
+
+# /gate/Coll/daughters/name   hole
+# /gate/Coll/daughters/insert hexagone
+# /gate/hole/geometry/setHeight  36.00 mm
+# /gate/hole/geometry/setRadius   0.60 mm
+# /gate/hole/placement/setRotationAxis   1 0 0
+# /gate/hole/placement/setRotationAngle 90 deg
+# /gate/hole/setMaterial  Air
+# /gate/hole/vis/setColor white
+# /gate/hole/vis/forceWireframe
+
+# /gate/hole/repeaters/insert cubicArray
+# /gate/hole/cubicArray/setRepeatNumberX 153
+# /gate/hole/cubicArray/setRepeatNumberY 1
+# /gate/hole/cubicArray/setRepeatNumberZ 051
+# /gate/hole/cubicArray/setRepeatVector  2.600  0.000   1.500 mm
+#
+# /gate/hole/repeaters/insert linear
+# /gate/hole/linear/setRepeatNumber      2
+# /gate/hole/linear/setRepeatVector      1.300  0.000   0.750 mm
+
+
+#
+# Repeater
+#
+/gate/Det/repeaters/insert ring
+/gate/Det/ring/setRepeatNumber 2
+
+
+#
+# Rotation
+#
+/gate/SPECThead/placement/setRotationAxis   0 0 1
+/gate/SPECThead/placement/setRotationAngle      {ANG} deg
+
+
+#
+# Phantom
+#
+/gate/world/daughters/name   Phantom
+/gate/world/daughters/insert ellipsoid
+/gate/Phantom/geometry/setXLength      80.0 mm 
+/gate/Phantom/geometry/setYLength     100.0 mm
+/gate/Phantom/geometry/setZLength     100.0 mm
+/gate/Phantom/geometry/setZTopCut     +05.0 mm
+/gate/Phantom/geometry/setZBottomCut  -05.0 mm
+/gate/Phantom/placement/setTranslation  0.0     0.0   0.0 mm
+/gate/Phantom/placement/setRotationAxis   0 0 1
+/gate/Phantom/placement/setRotationAngle   00 deg
+/gate/Phantom/setMaterial  Water
+/gate/Phantom/vis/setColor grey
+/gate/Phantom/vis/forceWireframe
+
+
+/gate/geometry/rebuild
+
+#
+# SAVE Detector SetUp
+#
+#/vis/ogl/set/printMode vectored
+#/vis/ogl/set/exportFormat pdf
+#/vis/ogl/printEPS
+
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+#                                                                 #
+#              S E N S I T I V E   D E T E C T O R                #
+#                                                                 #
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+
+# 
+# Crystal SD
+#
+/gate/systems/SPECThead/crystal/attach Det
+#/gate/Det/attachCrystalSD
+#/gate/Coll/attachCrystalSD
+/gate/Abs/attachCrystalSD
+
+#
+# Phantom SD
+#
+# /gate/P0/attachPhantomSD
+# /gate/P1/attachPhantomSD
+# /gate/P2/attachPhantomSD
+# /gate/Collimator/attachPhantomSD
+
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+#                                                                 #
+#     D E F I N I T I O N   A N D   D E S C R I T I O N           #
+#             O F   Y O U R   P H Y S I C S                       #
+#                                                                 #
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+
+# EM  P R O C E S S
+
+/gate/physics/addProcess PhotoElectric
+/gate/physics/addProcess Compton gamma
+/gate/physics/addProcess RayleighScattering gamma
+/gate/physics/addProcess GammaConversion
+
+/gate/physics/processes/PhotoElectric/setModel      StandardModel
+/gate/physics/processes/Compton/setModel            StandardModel
+/gate/physics/processes/RayleighScattering/setModel LivermoreModel
+/gate/physics/processes/GammaConversion/setModel    StandardModel
+
+/gate/physics/addProcess ElectronIonisation e-
+/gate/physics/addProcess ElectronIonisation e+
+
+/gate/physics/processes/ElectronIonisation/setModel StandardModel e-
+/gate/physics/processes/ElectronIonisation/setModel StandardModel e+
+
+/gate/physics/processList Enabled
+/gate/physics/processList Initialized
+
+#
+# C U T S
+#
+/gate/physics/Gamma/SetCutInRegion              world 0.05 mm
+/gate/physics/Electron/SetCutInRegion           world 0.01 mm
+/gate/physics/Positron/SetCutInRegion           world 0.01 mm
+
+/gate/physics/SetMaxToFInRegion                 world 0.01 s
+/gate/physics/SetMinKineticEnergyInRegion       world 2.00 keV
+
+/gate/physics/displayCuts
+
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+#                                                                 #
+#     I N I T I A L I Z A T I O N   O F   Y O U R                 #
+#                 S I M U L A T I O N                             #
+#                                                                 #
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+
+/gate/run/initialize
+
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+#                                                                 #
+#  D E F I N I T I O N   O F   Y O U R   A C Q U I S I T I O N    #
+#  D I G I T I Z E R   &   C O I N C I D E N C E   S H O R T E R  #
+#                                                                 #
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+
+/gate/output/digi/enable
+
+#
+# A D D E R
+#
+/gate/digitizer/Singles/insert adder
+
+#
+# R E A D O U T 
+#
+# /gate/digitizer/Singles/insert readout
+# /gate/digitizer/Singles/readout/setDepth 1
+
+#
+# E N E R G Y   B L U R R I N G
+#
+/gate/digitizer/Singles/insert blurring
+/gate/digitizer/Singles/blurring/setResolution 0.075
+/gate/digitizer/Singles/blurring/setEnergyOfReference 662. keV
+
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+#                                                                 #
+#                   D E F I N I T I O N   O F                     #
+#                Y O U R   O U T P U T   F I L E                  #
+#                                                                 #
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+
+/gate/output/analysis/enable
+/gate/output/ascii/enable
+/gate/output/root/disable
+/gate/output/projection/disable
+/gate/output/interfile/disable
+
+#
+# C H A N G E    T H E     S E E D (1)  O R   N O T (0)
+#
+# /gate/output/root/setSaveRndmFlag 1
+
+#
+# S E T U P  R O O T - F I L E
+#
+# /gate/output/root/setFileName test
+# /gate/output/root/setRootHitFlag 1
+# /gate/output/root/setRootSinglesFlag 1
+# /gate/output/root/setRootNtupleFlag 1
+
+#
+# S E T U P  A S C I I - F I L E
+#
+/gate/output/ascii/setFileName {OUT}
+# /gate/output/ascii/setOutFileSinglesAdderFlag 0
+# /gate/output/ascii/setOutFileSinglesBlurringFlag 0
+/gate/output/ascii/setOutFileSinglesFlag 1
+/gate/output/ascii/setOutFileHitsFlag 0
+
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+#                                                                 #
+#                   D E F I N I T I O N   O F                     #
+#            Y O U R   V E R B O S I T Y   L E V E L              #
+#                                                                 #
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+
+/control/verbose          0
+/run/verbose              0
+/event/verbose            0
+/tracking/verbose         0
+/gate/application/verbose 0
+/gate/generator/verbose   0
+/gate/source/verbose      0
+
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+#                                                                 #
+#                   D E F I N I T I O N   O F                     #
+#                    Y O U R   S O U R C E S                      #
+#                                                                 #
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+
+/control/add PH1  {ANG}  +90.0000
+/control/add PH2  {ANG}  -90.0000
+/control/add PS1  {ANG}  +71.5651
+/control/add PS2  {ANG} -108.4349
+/control/add PW1 -{ANG}  +71.5651
+/control/add PW2 -{ANG} -108.4349
+
+#
+# Gamma Source-0a
+#
+/gate/source/addSource               Src0a
+/gate/source/Src0a/gps/particle      gamma
+/gate/source/Src0a/gps/energy        159.0 keV
+/gate/source/Src0a/setActivity    12000000 Bq
+/gate/source/Src0a/gps/pos/type      Plane
+/gate/source/Src0a/gps/pos/shape     Ellipse
+/gate/source/Src0a/gps/pos/halfx      75.0 mm
+/gate/source/Src0a/gps/pos/halfy     100.0 mm
+/gate/source/Src0a/gps/pos/halfz      20.0 mm
+/gate/source/Src0a/gps/pos/centre    0.0  0.0  0.0 mm
+/gate/source/Src0a/gps/ang/type      iso
+/gate/source/Src0a/gps/ang/mintheta   90.0 deg
+/gate/source/Src0a/gps/ang/maxtheta   90.0 deg
+/gate/source/Src0a/gps/ang/minphi    {PH1} deg
+/gate/source/Src0a/gps/ang/maxphi    {PH1} deg
+#/gate/source/Src0a/visualize 100 red 2
+
+#
+# Gamma Source-0b
+#
+/gate/source/addSource               Src0b
+/gate/source/Src0b/gps/particle      gamma
+/gate/source/Src0b/gps/energy        159.0 keV
+/gate/source/Src0b/setActivity    12000000 Bq
+/gate/source/Src0b/gps/pos/type      Plane
+/gate/source/Src0b/gps/pos/shape     Ellipse
+/gate/source/Src0b/gps/pos/halfx      75.0 mm
+/gate/source/Src0b/gps/pos/halfy     100.0 mm
+/gate/source/Src0b/gps/pos/halfz      20.0 mm
+/gate/source/Src0b/gps/pos/centre    0.0  0.0  0.0 mm
+/gate/source/Src0b/gps/ang/type      iso
+/gate/source/Src0b/gps/ang/mintheta   90.0 deg
+/gate/source/Src0b/gps/ang/maxtheta   90.0 deg
+/gate/source/Src0b/gps/ang/minphi    {PH2} deg
+/gate/source/Src0b/gps/ang/maxphi    {PH2} deg
+#/gate/source/Src0b/visualize 100 red 2
+
+#
+# Gamma Source-1a
+#
+/gate/source/addSource               Src1a
+/gate/source/Src1a/gps/particle      gamma
+/gate/source/Src1a/gps/energy        159.0 keV
+/gate/source/Src1a/setActivity      325000 Bq
+/gate/source/Src1a/gps/pos/type      Plane
+/gate/source/Src1a/gps/pos/shape     Ellipse
+/gate/source/Src1a/gps/pos/halfx      12.0 mm
+/gate/source/Src1a/gps/pos/halfy      34.0 mm
+/gate/source/Src1a/gps/pos/halfz      20.0 mm
+/gate/source/Src1a/gps/pos/rot1      -3  1  0 
+/gate/source/Src1a/gps/pos/centre  +24.0  2.0  0.0 mm
+/gate/source/Src1a/gps/ang/type      iso
+/gate/source/Src1a/gps/ang/mintheta   90.0 deg
+/gate/source/Src1a/gps/ang/maxtheta   90.0 deg
+/gate/source/Src1a/gps/ang/minphi    {PW1} deg
+/gate/source/Src1a/gps/ang/maxphi    {PW1} deg
+#/gate/source/Src1a/visualize 100 red 2
+
+#
+# Gamma Source-1b
+#
+/gate/source/addSource               Src1b
+/gate/source/Src1b/gps/particle      gamma
+/gate/source/Src1b/gps/energy        159.0 keV
+/gate/source/Src1b/setActivity      325000 Bq
+/gate/source/Src1b/gps/pos/type      Plane
+/gate/source/Src1b/gps/pos/shape     Ellipse
+/gate/source/Src1b/gps/pos/halfx      12.0 mm
+/gate/source/Src1b/gps/pos/halfy      34.0 mm
+/gate/source/Src1b/gps/pos/halfz      20.0 mm
+/gate/source/Src1b/gps/pos/rot1      -3  1  0 
+/gate/source/Src1b/gps/pos/centre  +24.0  2.0  0.0 mm
+/gate/source/Src1b/gps/ang/type      iso
+/gate/source/Src1b/gps/ang/mintheta   90.0 deg
+/gate/source/Src1b/gps/ang/maxtheta   90.0 deg
+/gate/source/Src1b/gps/ang/minphi    {PW2} deg
+/gate/source/Src1b/gps/ang/maxphi    {PW2} deg
+#/gate/source/Src1b/visualize 100 red 2
+
+#
+# Gamma Source-2a
+#
+/gate/source/addSource               Src2a
+/gate/source/Src2a/gps/particle      gamma
+/gate/source/Src2a/gps/energy        159.0 keV
+/gate/source/Src2a/setActivity      610000 Bq
+/gate/source/Src2a/gps/pos/type      Plane
+/gate/source/Src2a/gps/pos/shape     Ellipse
+/gate/source/Src2a/gps/pos/halfx      17.0 mm
+/gate/source/Src2a/gps/pos/halfy      45.0 mm
+/gate/source/Src2a/gps/pos/halfz      20.0 mm
+/gate/source/Src2a/gps/pos/rot1      +3  1  0 
+/gate/source/Src2a/gps/pos/centre  -24.0  2.0  0.0 mm
+/gate/source/Src2a/gps/ang/type      iso
+/gate/source/Src2a/gps/ang/mintheta   90.0 deg
+/gate/source/Src2a/gps/ang/maxtheta   90.0 deg
+/gate/source/Src2a/gps/ang/minphi    {PS1} deg
+/gate/source/Src2a/gps/ang/maxphi    {PS1} deg
+#/gate/source/Src2a/visualize 100 red 2
+
+#
+# Gamma Source-2b
+#
+/gate/source/addSource               Src2b
+/gate/source/Src2b/gps/particle      gamma
+/gate/source/Src2b/gps/energy        159.0 keV
+/gate/source/Src2b/setActivity      610000 Bq
+/gate/source/Src2b/gps/pos/type      Plane
+/gate/source/Src2b/gps/pos/shape     Ellipse
+/gate/source/Src2b/gps/pos/halfx      17.0 mm
+/gate/source/Src2b/gps/pos/halfy      45.0 mm
+/gate/source/Src2b/gps/pos/halfz      20.0 mm
+/gate/source/Src2b/gps/pos/rot1      +3  1  0 
+/gate/source/Src2b/gps/pos/centre  -24.0  2.0  0.0 mm
+/gate/source/Src2b/gps/ang/type      iso
+/gate/source/Src2b/gps/ang/mintheta   90.0 deg
+/gate/source/Src2b/gps/ang/maxtheta   90.0 deg
+/gate/source/Src2b/gps/ang/minphi    {PS2} deg
+/gate/source/Src2b/gps/ang/maxphi    {PS2} deg
+#/gate/source/Src2b/visualize 100 red 2
+
+#
+# Gamma Source-3a
+#
+/gate/source/addSource               Src3a
+/gate/source/Src3a/gps/particle      gamma
+/gate/source/Src3a/gps/energy        159.0 keV
+/gate/source/Src3a/setActivity     1000000 Bq
+/gate/source/Src3a/gps/pos/type      Plane
+/gate/source/Src3a/gps/pos/shape     Ellipse
+/gate/source/Src3a/gps/pos/halfx      23.0 mm
+/gate/source/Src3a/gps/pos/halfy      27.0 mm
+/gate/source/Src3a/gps/pos/halfz      20.0 mm 
+/gate/source/Src3a/gps/pos/centre   0.0  40.0  0.0 mm
+/gate/source/Src3a/gps/ang/type      iso
+/gate/source/Src3a/gps/ang/mintheta   90.0 deg
+/gate/source/Src3a/gps/ang/maxtheta   90.0 deg
+/gate/source/Src3a/gps/ang/minphi    {PH1} deg
+/gate/source/Src3a/gps/ang/maxphi    {PH1} deg
+#/gate/source/Src3a/visualize 100 red 2
+
+#
+# Gamma Source-3b
+#
+/gate/source/addSource               Src3b
+/gate/source/Src3b/gps/particle      gamma
+/gate/source/Src3b/gps/energy        159.0 keV
+/gate/source/Src3b/setActivity     1000000 Bq
+/gate/source/Src3b/gps/pos/type      Plane
+/gate/source/Src3b/gps/pos/shape     Ellipse
+/gate/source/Src3b/gps/pos/halfx      23.0 mm
+/gate/source/Src3b/gps/pos/halfy      27.0 mm
+/gate/source/Src3b/gps/pos/halfz      20.0 mm 
+/gate/source/Src3b/gps/pos/centre   0.0  40.0  0.0 mm
+/gate/source/Src3b/gps/ang/type      iso
+/gate/source/Src3b/gps/ang/mintheta   90.0 deg
+/gate/source/Src3b/gps/ang/maxtheta   90.0 deg
+/gate/source/Src3b/gps/ang/minphi    {PH2} deg
+/gate/source/Src3b/gps/ang/maxphi    {PH2} deg
+#/gate/source/Src3b/visualize 100 red 2
+
+#
+# Gamma Source-4a
+#
+/gate/source/addSource               Src4a
+/gate/source/Src4a/gps/particle      gamma
+/gate/source/Src4a/gps/energy        159.0 keV
+/gate/source/Src4a/setActivity       40000 Bq
+/gate/source/Src4a/gps/pos/type      Plane
+/gate/source/Src4a/gps/pos/shape     Ellipse
+/gate/source/Src4a/gps/pos/halfx       5.0 mm
+/gate/source/Src4a/gps/pos/halfy       5.0 mm
+/gate/source/Src4a/gps/pos/halfz      20.0 mm 
+/gate/source/Src4a/gps/pos/centre   0.0  +13.0  0.0 mm
+/gate/source/Src4a/gps/ang/type      iso
+/gate/source/Src4a/gps/ang/mintheta   90.0 deg
+/gate/source/Src4a/gps/ang/maxtheta   90.0 deg
+/gate/source/Src4a/gps/ang/minphi    {PH1} deg
+/gate/source/Src4a/gps/ang/maxphi    {PH1} deg
+#/gate/source/Src4a/visualize 100 red 2
+
+#
+# Gamma Source-4b
+#
+/gate/source/addSource               Src4b
+/gate/source/Src4b/gps/particle      gamma
+/gate/source/Src4b/gps/energy        159.0 keV
+/gate/source/Src4b/setActivity       40000 Bq
+/gate/source/Src4b/gps/pos/type      Plane
+/gate/source/Src4b/gps/pos/shape     Ellipse
+/gate/source/Src4b/gps/pos/halfx       5.0 mm
+/gate/source/Src4b/gps/pos/halfy       5.0 mm
+/gate/source/Src4b/gps/pos/halfz      20.0 mm 
+/gate/source/Src4b/gps/pos/centre   0.0  +13.0  0.0 mm
+/gate/source/Src4b/gps/ang/type      iso
+/gate/source/Src4b/gps/ang/mintheta   90.0 deg
+/gate/source/Src4b/gps/ang/maxtheta   90.0 deg
+/gate/source/Src4b/gps/ang/minphi    {PH2} deg
+/gate/source/Src4b/gps/ang/maxphi    {PH2} deg
+#/gate/source/Src4b/visualize 100 red 2
+
+#
+# Gamma Source-5a
+#
+/gate/source/addSource               Src5a
+/gate/source/Src5a/gps/particle      gamma
+/gate/source/Src5a/gps/energy        159.0 keV
+/gate/source/Src5a/setActivity       40000 Bq
+/gate/source/Src5a/gps/pos/type      Plane
+/gate/source/Src5a/gps/pos/shape     Ellipse
+/gate/source/Src5a/gps/pos/halfx       5.0 mm
+/gate/source/Src5a/gps/pos/halfy       5.0 mm
+/gate/source/Src5a/gps/pos/halfz      20.0 mm 
+/gate/source/Src5a/gps/pos/centre   0.0  -11.0  0.0 mm
+/gate/source/Src5a/gps/ang/type      iso
+/gate/source/Src5a/gps/ang/mintheta   90.0 deg
+/gate/source/Src5a/gps/ang/maxtheta   90.0 deg
+/gate/source/Src5a/gps/ang/minphi    {PH1} deg
+/gate/source/Src5a/gps/ang/maxphi    {PH1} deg
+#/gate/source/Src5a/visualize 100 red 2
+
+#
+# Gamma Source-5b
+#
+/gate/source/addSource               Src5b
+/gate/source/Src5b/gps/particle      gamma
+/gate/source/Src5b/gps/energy        159.0 keV
+/gate/source/Src5b/setActivity       40000 Bq
+/gate/source/Src5b/gps/pos/type      Plane
+/gate/source/Src5b/gps/pos/shape     Ellipse
+/gate/source/Src5b/gps/pos/halfx       5.0 mm
+/gate/source/Src5b/gps/pos/halfy       5.0 mm
+/gate/source/Src5b/gps/pos/halfz      20.0 mm 
+/gate/source/Src5b/gps/pos/centre   0.0  -11.0  0.0 mm
+/gate/source/Src5b/gps/ang/type      iso
+/gate/source/Src5b/gps/ang/mintheta   90.0 deg
+/gate/source/Src5b/gps/ang/maxtheta   90.0 deg
+/gate/source/Src5b/gps/ang/minphi    {PH2} deg
+/gate/source/Src5b/gps/ang/maxphi    {PH2} deg
+#/gate/source/Src5b/visualize 100 red 2
+
+#
+# Gamma Source-6a
+#
+/gate/source/addSource               Src6a
+/gate/source/Src6a/gps/particle      gamma
+/gate/source/Src6a/gps/energy        159.0 keV
+/gate/source/Src6a/setActivity       20000 Bq
+/gate/source/Src6a/gps/pos/type      Plane
+/gate/source/Src6a/gps/pos/shape     Ellipse
+/gate/source/Src6a/gps/pos/halfx       5.0 mm
+/gate/source/Src6a/gps/pos/halfy       2.5 mm
+/gate/source/Src6a/gps/pos/halfz      20.0 mm 
+/gate/source/Src6a/gps/pos/centre   -11.0  -64.0  0.0 mm
+/gate/source/Src6a/gps/ang/type      iso
+/gate/source/Src6a/gps/ang/mintheta   90.0 deg
+/gate/source/Src6a/gps/ang/maxtheta   90.0 deg
+/gate/source/Src6a/gps/ang/minphi    {PH1} deg
+/gate/source/Src6a/gps/ang/maxphi    {PH1} deg
+#/gate/source/Src6a/visualize 100 red 2
+
+#
+# Gamma Source-6b
+#
+/gate/source/addSource               Src6b
+/gate/source/Src6b/gps/particle      gamma
+/gate/source/Src6b/gps/energy        159.0 keV
+/gate/source/Src6b/setActivity       20000 Bq
+/gate/source/Src6b/gps/pos/type      Plane
+/gate/source/Src6b/gps/pos/shape     Ellipse
+/gate/source/Src6b/gps/pos/halfx       5.0 mm
+/gate/source/Src6b/gps/pos/halfy       2.5 mm
+/gate/source/Src6b/gps/pos/halfz      20.0 mm 
+/gate/source/Src6b/gps/pos/centre   -11.0  -64.0  0.0 mm
+/gate/source/Src6b/gps/ang/type      iso
+/gate/source/Src6b/gps/ang/mintheta   90.0 deg
+/gate/source/Src6b/gps/ang/maxtheta   90.0 deg
+/gate/source/Src6b/gps/ang/minphi    {PH2} deg
+/gate/source/Src6b/gps/ang/maxphi    {PH2} deg
+#/gate/source/Src6b/visualize 100 red 2
+
+#
+# Gamma Source-7a
+#
+/gate/source/addSource               Src7a
+/gate/source/Src7a/gps/particle      gamma
+/gate/source/Src7a/gps/energy        159.0 keV
+/gate/source/Src7a/setActivity       10000 Bq
+/gate/source/Src7a/gps/pos/type      Plane
+/gate/source/Src7a/gps/pos/shape     Ellipse
+/gate/source/Src7a/gps/pos/halfx       2.5 mm
+/gate/source/Src7a/gps/pos/halfy       2.5 mm
+/gate/source/Src7a/gps/pos/halfz      20.0 mm 
+/gate/source/Src7a/gps/pos/centre   0.0  -64.0  0.0 mm
+/gate/source/Src7a/gps/ang/type      iso
+/gate/source/Src7a/gps/ang/mintheta   90.0 deg
+/gate/source/Src7a/gps/ang/maxtheta   90.0 deg
+/gate/source/Src7a/gps/ang/minphi    {PH1} deg
+/gate/source/Src7a/gps/ang/maxphi    {PH1} deg
+#/gate/source/Src7a/visualize 100 red 2
+
+#
+# Gamma Source-7b
+#
+/gate/source/addSource               Src7b
+/gate/source/Src7b/gps/particle      gamma
+/gate/source/Src7b/gps/energy        159.0 keV
+/gate/source/Src7b/setActivity       10000 Bq
+/gate/source/Src7b/gps/pos/type      Plane
+/gate/source/Src7b/gps/pos/shape     Ellipse
+/gate/source/Src7b/gps/pos/halfx       2.5 mm
+/gate/source/Src7b/gps/pos/halfy       2.5 mm
+/gate/source/Src7b/gps/pos/halfz      20.0 mm 
+/gate/source/Src7b/gps/pos/centre   0.0  -64.0  0.0 mm
+/gate/source/Src7b/gps/ang/type      iso
+/gate/source/Src7b/gps/ang/mintheta   90.0 deg
+/gate/source/Src7b/gps/ang/maxtheta   90.0 deg
+/gate/source/Src7b/gps/ang/minphi    {PH2} deg
+/gate/source/Src7b/gps/ang/maxphi    {PH2} deg
+#/gate/source/Src7b/visualize 100 red 2
+
+#
+# Gamma Source-8a
+#
+/gate/source/addSource               Src8a
+/gate/source/Src8a/gps/particle      gamma
+/gate/source/Src8a/gps/energy        159.0 keV
+/gate/source/Src8a/setActivity       20000 Bq
+/gate/source/Src8a/gps/pos/type      Plane
+/gate/source/Src8a/gps/pos/shape     Ellipse
+/gate/source/Src8a/gps/pos/halfx       2.5 mm
+/gate/source/Src8a/gps/pos/halfy       5.0 mm
+/gate/source/Src8a/gps/pos/halfz      20.0 mm 
+/gate/source/Src8a/gps/pos/centre  +9.0  -64.0  0.0 mm
+/gate/source/Src8a/gps/ang/type      iso
+/gate/source/Src8a/gps/ang/mintheta   90.0 deg
+/gate/source/Src8a/gps/ang/maxtheta   90.0 deg
+/gate/source/Src8a/gps/ang/minphi    {PH1} deg
+/gate/source/Src8a/gps/ang/maxphi    {PH1} deg
+#/gate/source/Src8a/visualize 100 red 2
+
+#
+# Gamma Source-8b
+#
+/gate/source/addSource               Src8b
+/gate/source/Src8b/gps/particle      gamma
+/gate/source/Src8b/gps/energy        159.0 keV
+/gate/source/Src8b/setActivity       20000 Bq
+/gate/source/Src8b/gps/pos/type      Plane
+/gate/source/Src8b/gps/pos/shape     Ellipse
+/gate/source/Src8b/gps/pos/halfx       2.5 mm
+/gate/source/Src8b/gps/pos/halfy       5.0 mm
+/gate/source/Src8b/gps/pos/halfz      20.0 mm 
+/gate/source/Src8b/gps/pos/centre  +9.0  -64.0  0.0 mm
+/gate/source/Src8b/gps/ang/type      iso
+/gate/source/Src8b/gps/ang/mintheta   90.0 deg
+/gate/source/Src8b/gps/ang/maxtheta   90.0 deg
+/gate/source/Src8b/gps/ang/minphi    {PH2} deg
+/gate/source/Src8b/gps/ang/maxphi    {PH2} deg
+#/gate/source/Src8b/visualize 100 red 2
+
+/gate/source/list
+
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+#                                                                 #
+#               S T A R T   A C Q U I S I T I O N                 #
+#                 T I M E   P A R A M E T E R S                   #
+#                                                                 #
+#-------------------oooooOOOOO00000OOOOOooooo---------------------#
+
+#
+# E X P E R I M E N T
+#
+
+#/random/setSavingFlag  0
+#/random/resetEngineFrom start1.rndm
+#/random/setSeeds 1234 5678
+
+/gate/random/setEngineName Ranlux64
+/gate/random/setEngineSeed {SEED}
+
+/gate/application/setTimeSlice       0.02  s
+/gate/application/setTimeStart       0.00  s
+/gate/application/setTimeStop        0.30  s
+
+/gate/application/startDAQ
+
+# /vis/ogl/export   test.pdf
+
+exit
+
