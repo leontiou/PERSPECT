@@ -287,26 +287,13 @@ def run(
                         [np.sin(theta),  np.cos(theta), 0],
                         [0,              0,             1]])
 
-    # r1 = rmatrix @ np.array([0, head_distance, 0])
-    # r2 = rmatrix @ np.array([0, -head_distance, 0])
-    # head1.translation = r1
-    # head2.translation = r2
-
-    # head1.rotation = rot_z(angle) @ rot_y(180) @ rot_x(90)
-    # head2.rotation = rot_z(angle) @ rot_x(-90)
-
-
     r1 = rmatrix @ np.array([0, head_distance, 0])
     r2 = rmatrix @ np.array([0, -head_distance, 0])
     head1.translation = r1
     head2.translation = r2
-    
-    head1_phi = angle
-    head2_phi = angle + 180.0
-    
-    head1.rotation = rot_z(head1_phi) @ rot_y(180) @ rot_x(90)
-    head2.rotation = rot_z(head2_phi) @ rot_y(180) @ rot_x(90)
 
+    head1.rotation = rot_z(angle) @ rot_y(180) @ rot_x(90)    
+    head2.rotation = rot_z(angle) @ rot_x(-90)
 
     
     crystal1 = sim.volume_manager.get_volume("head1_crystal")
@@ -331,8 +318,11 @@ def run(
     # --------------------------------------------------
     # 5. Sources
     # --------------------------------------------------
-    # offset = float(dtheta) * u.deg
-    # ANG = angle * u.deg
+    # def wrap_deg(x):
+    #     return x % 360.0
+
+    # offset_deg = float(dtheta)
+    # ANG_deg = float(angle)
 
     # if dtheta == -1:
     #     TH_min = 0 * u.deg
@@ -342,85 +332,209 @@ def run(
     #     PHI2_min = 0 * u.deg
     #     PHI2_max = 360 * u.deg
     # else:
-    #     TH_min = 90 * u.deg - offset
-    #     TH_max = 90 * u.deg + offset
-    #     PHI1_min = ANG + 90 * u.deg - offset
-    #     PHI1_max = ANG + 90 * u.deg + offset
-    #     PHI2_min = ANG - 90 * u.deg - offset
-    #     PHI2_max = ANG - 90 * u.deg + offset
+    #     TH_min = (90.0 - offset_deg) * u.deg
+    #     TH_max = (90.0 + offset_deg) * u.deg
+
+    #     phi1_min_deg = wrap_deg(ANG_deg + 90.0 - offset_deg)
+    #     phi1_max_deg = wrap_deg(ANG_deg + 90.0 + offset_deg)
+    #     phi2_min_deg = wrap_deg(ANG_deg - 90.0 - offset_deg)
+    #     phi2_max_deg = wrap_deg(ANG_deg - 90.0 + offset_deg)
+
+    #     PHI1_min = phi1_min_deg * u.deg
+    #     PHI1_max = phi1_max_deg * u.deg
+    #     PHI2_min = phi2_min_deg * u.deg
+    #     PHI2_max = phi2_max_deg * u.deg
+
+    
+
+    # src1 = sim.add_source("VoxelSource", "voxel_source1")
+    # src1.particle = "gamma"
+    # src1.attached_to = "world"
+    # src1.image = source_map_path
+    # src1.position.translation = [0.0, 0.0, 0.0]
+    # src1.direction.type = "iso"
+    # src1.direction.theta = [TH_min, TH_max]
+    # src1.direction.phi = [PHI1_min, PHI1_max]
+
+    # src2 = sim.add_source("VoxelSource", "voxel_source2")
+    # src2.particle = "gamma"
+    # src2.attached_to = "world"
+    # src2.image = source_map_path
+    # src2.position.translation = [0.0, 0.0, 0.0]
+    # src2.direction.type = "iso"
+    # src2.direction.theta = [TH_min, TH_max]
+    # src2.direction.phi = [PHI2_min, PHI2_max]
+
+
+    # apply_radionuclide_spectrum(src1, isotope, keV)
+    # apply_radionuclide_spectrum(src2, isotope, keV)    
+    # if sim.visu:
+    #     sim.number_of_threads = 1
+    #     src1.activity = 100 * Bq
+    #     src2.activity = 100 * Bq
+    # else:
+    #     src1.activity = activity * MBq
+    #     src2.activity = activity * MBq
+# --------------------------------------------------
+# 5. Sources
+# --------------------------------------------------
 
     def wrap_deg(x):
         return x % 360.0
-
+    
+    
+    def split_phi_interval(phi_min_deg, phi_max_deg, eps=1e-9):
+        """
+        Convert a possibly wrapped phi interval into one or two valid non-empty intervals.
+        """
+    
+        # dtheta = 0 pencil-beam case
+        if abs(phi_max_deg - phi_min_deg) <= eps:
+            p = wrap_deg(phi_min_deg)
+            return [(p, p)]
+    
+        pmin = wrap_deg(phi_min_deg)
+        pmax = wrap_deg(phi_max_deg)
+    
+        if pmin < pmax:
+            return [(pmin, pmax)]
+    
+        if pmin > pmax:
+            ranges = []
+    
+            if 360.0 - pmin > eps:
+                ranges.append((pmin, 360.0))
+    
+            if pmax > eps:
+                ranges.append((0.0, pmax))
+    
+            return ranges
+    
+        # This means the interval wrapped exactly to the boundary.
+        # Example: [-6, 0] -> [354, 0].
+        # Keep only [354, 360], not [0, 0].
+        if phi_min_deg < phi_max_deg:
+            return [(pmin, 360.0)]
+    
+        return [(pmin, pmax)]    
+    
+    def add_voxel_sources_for_head(
+        sim,
+        base_name,
+        source_map_path,
+        theta_range,
+        phi_ranges,
+    ):
+        """
+        Create one or more VoxelSource objects for a single camera head.
+        Multiple sources are needed only when phi crosses 0/360.
+        """
+    
+        src_list = []
+    
+        for i, (pmin, pmax) in enumerate(phi_ranges):
+            if len(phi_ranges) == 1:
+                src_name = base_name
+            else:
+                src_name = f"{base_name}_{i}"
+    
+            src = sim.add_source("VoxelSource", src_name)
+            src.particle = "gamma"
+            src.attached_to = "world"
+            src.image = source_map_path
+            src.position.translation = [0.0, 0.0, 0.0]
+            src.direction.type = "iso"
+            src.direction.theta = theta_range
+            src.direction.phi = [pmin * u.deg, pmax * u.deg]
+    
+            src_list.append(src)
+    
+        return src_list
+    
+    
+    def assign_activity_by_phi_width(src_list, phi_ranges, total_activity):
+        """
+        Preserve the total activity assigned to one camera direction.
+        If the phi interval was split, divide activity according to interval width.
+        """
+    
+        widths = np.array([pmax - pmin for pmin, pmax in phi_ranges], dtype=float)
+        widths_sum = widths.sum()
+    
+        if widths_sum <= 0.0:
+            # dtheta = 0 case: one exact direction, zero angular width
+            for src in src_list:
+                src.activity = total_activity / len(src_list)
+        else:
+            for src, width in zip(src_list, widths):
+                src.activity = total_activity * width / widths_sum
+    
+    
     offset_deg = float(dtheta)
     ANG_deg = float(angle)
-
+    
     if dtheta == -1:
-        TH_min = 0 * u.deg
-        TH_max = 180 * u.deg
-        PHI1_min = 0 * u.deg
-        PHI1_max = 360 * u.deg
-        PHI2_min = 0 * u.deg
-        PHI2_max = 360 * u.deg
+        TH_min = 0.0 * u.deg
+        TH_max = 180.0 * u.deg
+    
+        phi1_ranges = [(0.0, 360.0)]
+        phi2_ranges = [(0.0, 360.0)]
+    
     else:
         TH_min = (90.0 - offset_deg) * u.deg
         TH_max = (90.0 + offset_deg) * u.deg
-
-        phi1_min_deg = wrap_deg(ANG_deg + 90.0 - offset_deg)
-        phi1_max_deg = wrap_deg(ANG_deg + 90.0 + offset_deg)
-        phi2_min_deg = wrap_deg(ANG_deg - 90.0 - offset_deg)
-        phi2_max_deg = wrap_deg(ANG_deg - 90.0 + offset_deg)
-
-        PHI1_min = phi1_min_deg * u.deg
-        PHI1_max = phi1_max_deg * u.deg
-        PHI2_min = phi2_min_deg * u.deg
-        PHI2_max = phi2_max_deg * u.deg
-
-        # def safe_phi_range(center_deg, offset_deg, u):
-        #     a = center_deg - offset_deg
-        #     b = center_deg + offset_deg
-        
-        #     # If the interval crosses 0/360, use full phi range.
-        #     # This avoids invalid intervals such as [355 deg, 5 deg].
-        #     if a < 0 or b > 360:
-        #         return 0 * u.deg, 360 * u.deg
-        
-        #     return a * u.deg, b * u.deg
-        
-        
-        # PHI1_min, PHI1_max = safe_phi_range(ANG_deg + 90.0, offset_deg, u)
-        # PHI2_min, PHI2_max = safe_phi_range(ANG_deg - 90.0, offset_deg, u)    
     
-
-    src1 = sim.add_source("VoxelSource", "voxel_source1")
-    src1.particle = "gamma"
-    src1.attached_to = "world"
-    src1.image = source_map_path
-    src1.position.translation = [0.0, 0.0, 0.0]
-    src1.direction.type = "iso"
-    src1.direction.theta = [TH_min, TH_max]
-    src1.direction.phi = [PHI1_min, PHI1_max]
-
-    src2 = sim.add_source("VoxelSource", "voxel_source2")
-    src2.particle = "gamma"
-    src2.attached_to = "world"
-    src2.image = source_map_path
-    src2.position.translation = [0.0, 0.0, 0.0]
-    src2.direction.type = "iso"
-    src2.direction.theta = [TH_min, TH_max]
-    src2.direction.phi = [PHI2_min, PHI2_max]
-
-    apply_radionuclide_spectrum(src1, isotope, keV)
-    apply_radionuclide_spectrum(src2, isotope, keV)
-
+        # Keep your original correct dual-head convention
+        phi1_center = ANG_deg + 90.0
+        phi2_center = ANG_deg - 90.0
+    
+        phi1_ranges = split_phi_interval(
+            phi1_center - offset_deg,
+            phi1_center + offset_deg,
+        )
+    
+        phi2_ranges = split_phi_interval(
+            phi2_center - offset_deg,
+            phi2_center + offset_deg,
+        )
+    
+    
+    print("phi1_ranges =", phi1_ranges)
+    print("phi2_ranges =", phi2_ranges)
+    
+    
+    src1_list = add_voxel_sources_for_head(
+        sim=sim,
+        base_name="voxel_source1",
+        source_map_path=source_map_path,
+        theta_range=[TH_min, TH_max],
+        phi_ranges=phi1_ranges,
+    )
+    
+    src2_list = add_voxel_sources_for_head(
+        sim=sim,
+        base_name="voxel_source2",
+        source_map_path=source_map_path,
+        theta_range=[TH_min, TH_max],
+        phi_ranges=phi2_ranges,
+    )
+    
+    
+    for src in src1_list + src2_list:
+        apply_radionuclide_spectrum(src, isotope, keV)
+    
+    
     if sim.visu:
         sim.number_of_threads = 1
-        src1.activity = 100 * Bq
-        src2.activity = 100 * Bq
+        total_activity_per_head = 100.0 * Bq
     else:
-        src1.activity = activity * MBq
-        src2.activity = activity * MBq
-
+        total_activity_per_head = activity * MBq
+    
+    
+    assign_activity_by_phi_width(src1_list, phi1_ranges, total_activity_per_head)
+    assign_activity_by_phi_width(src2_list, phi2_ranges, total_activity_per_head)
+    
+    
     # --------------------------------------------------
     # 6. Statistics
     # --------------------------------------------------
