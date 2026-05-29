@@ -248,7 +248,7 @@ def run(
     # --------------------------------------------------
     # 1. World
     # --------------------------------------------------
-    sim.world.size = [2 * m, 2 * m, 2 * m]
+    sim.world.size = [4 * m, 4 * m, 4 * m]
     sim.world.material = "G4_AIR"
 
     # --------------------------------------------------
@@ -270,7 +270,7 @@ def run(
     # --------------------------------------------------
     # 3. Dual-head GE Discovery NM670
     # --------------------------------------------------
-    head_distance = 50 * cm
+    head_distance = 100 * cm
 
     if usecollimator:
         discovery.add_spect_head(sim, "head1", collimator_type="lehr")
@@ -287,14 +287,28 @@ def run(
                         [np.sin(theta),  np.cos(theta), 0],
                         [0,              0,             1]])
 
+    # r1 = rmatrix @ np.array([0, head_distance, 0])
+    # r2 = rmatrix @ np.array([0, -head_distance, 0])
+    # head1.translation = r1
+    # head2.translation = r2
+
+    # head1.rotation = rot_z(angle) @ rot_y(180) @ rot_x(90)
+    # head2.rotation = rot_z(angle) @ rot_x(-90)
+
+
     r1 = rmatrix @ np.array([0, head_distance, 0])
     r2 = rmatrix @ np.array([0, -head_distance, 0])
     head1.translation = r1
     head2.translation = r2
+    
+    head1_phi = angle
+    head2_phi = angle + 180.0
+    
+    head1.rotation = rot_z(head1_phi) @ rot_y(180) @ rot_x(90)
+    head2.rotation = rot_z(head2_phi) @ rot_y(180) @ rot_x(90)
 
-    head1.rotation = rot_z(angle) @ rot_y(180) @ rot_x(90)
-    head2.rotation = rot_z(angle) @ rot_x(-90)
 
+    
     crystal1 = sim.volume_manager.get_volume("head1_crystal")
     crystal2 = sim.volume_manager.get_volume("head2_crystal")
 
@@ -362,6 +376,21 @@ def run(
         PHI2_min = phi2_min_deg * u.deg
         PHI2_max = phi2_max_deg * u.deg
 
+        # def safe_phi_range(center_deg, offset_deg, u):
+        #     a = center_deg - offset_deg
+        #     b = center_deg + offset_deg
+        
+        #     # If the interval crosses 0/360, use full phi range.
+        #     # This avoids invalid intervals such as [355 deg, 5 deg].
+        #     if a < 0 or b > 360:
+        #         return 0 * u.deg, 360 * u.deg
+        
+        #     return a * u.deg, b * u.deg
+        
+        
+        # PHI1_min, PHI1_max = safe_phi_range(ANG_deg + 90.0, offset_deg, u)
+        # PHI2_min, PHI2_max = safe_phi_range(ANG_deg - 90.0, offset_deg, u)    
+    
 
     src1 = sim.add_source("VoxelSource", "voxel_source1")
     src1.particle = "gamma"
